@@ -16,7 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class App {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
-    public static void main( String[] args ){
+    public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(App.class, args);
         SpringBeanUtil.setApplicationContext(applicationContext);
 

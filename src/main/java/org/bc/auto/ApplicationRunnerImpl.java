@@ -15,6 +15,7 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationRunnerImpl.class);
 
     private BlockChainQueueService blockChainQueueService;
+
     @Autowired
     public void setBlockChainQueueService(BlockChainQueueService blockChainQueueService) {
         this.blockChainQueueService = blockChainQueueService;
@@ -22,8 +23,8 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
 
     public void run(ApplicationArguments args) throws Exception {
         logger.info("[application->init]服务启动完成，开始加载线程执行监听脚本队列");
-        ThreadPoolManager.newInstance().addExecuteTask(new Runnable(){
-            public void run(){
+        ThreadPoolManager.newInstance().addExecuteTask(new Runnable() {
+            public void run() {
                 blockChainQueueService.run();
             }
         });
