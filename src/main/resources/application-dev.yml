@@ -4,7 +4,7 @@ server:
 
 spring:
   application:
-    name: fabric-k8s-auto-deploy
+    name: "fabric-k8s-auto-deploy"
   main:
     allow-bean-definition-overriding: true
   #  h2:
@@ -67,16 +67,17 @@ logging:
       max-file-size: 1GB
 
 bc-auto:
-  nfs-host: 127.0.0.1
-  nfs-path: ./nfs_data
+  nfs-host: "127.0.0.1"
+  nfs-path: "./nfs_data"
   pv-suffix: pv
   pvc-suffix: pvc
   volume-data-suffix: data
   pdb-suffix: pdb
-  msp-ca-name: msp-root-ca
-  tls-ca-name: tls-root-ca
-  k8s-work-path: ./work/share
-  k8s-data-path: ./data/auto
+  msp-ca-name: "msp-root-ca"
+  tls-ca-name: "tls-root-ca"
+  k8s-config-path: "~/.kube/config"
+  k8s-work-path: "./work/share"
+  k8s-data-path: "./data/auto"
   #  generate-certs-root-path: /data/app
   #  save-certs-root-path: /data/auto
   #  fabric-tools-path: /data/share/bin/v1.4.5

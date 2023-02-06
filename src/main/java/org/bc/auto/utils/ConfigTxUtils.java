@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -205,7 +206,7 @@ public class ConfigTxUtils {
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-            OutputStream outStream = new FileOutputStream(file);
+            OutputStream outStream = Files.newOutputStream(file.toPath());
             outStream.write(sb.toString().getBytes());
             outStream.close();
             return true;

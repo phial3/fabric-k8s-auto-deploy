@@ -1,12 +1,10 @@
 package org.bc.auto.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.bc.auto.model.vo.OrgVo;
 import org.bc.auto.model.vo.Result;
 import org.bc.auto.service.ClusterService;
 import org.bc.auto.service.OrgService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -30,6 +30,10 @@ public class BlockChainAutoConstant {
     @Value("${bc-auto.nfs-path}")
     public static String NFS_PATH;
 
+    //K8S config path
+    @Value("${bc-auto.k8s-config-path}")
+    public static String K8S_CONFIG_PATH;
+
     //K8S work path
     @Value("${bc-auto.k8s-work-path}")
     public static String K8S_WORK_PATH;

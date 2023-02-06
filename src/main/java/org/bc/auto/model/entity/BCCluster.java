@@ -1,8 +1,11 @@
 package org.bc.auto.model.entity;
 
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class BCCluster implements Serializable {
     private static final long serialVersionUID = 4317978403273155155L;
 
@@ -29,83 +32,4 @@ public class BCCluster implements Serializable {
 
     private int stateDbType;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getClusterName() {
-        return clusterName;
-    }
-
-    public void setClusterName(String clusterName) {
-        this.clusterName = clusterName;
-    }
-
-    public Integer getInstallStatus() {
-        return installStatus;
-    }
-
-    public void setInstallStatus(Integer installStatus) {
-        this.installStatus = installStatus;
-    }
-
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getExpiresTime() {
-        return expiresTime;
-    }
-
-    public void setExpiresTime(Long expiresTime) {
-        this.expiresTime = expiresTime;
-    }
-
-    public Integer getClusterType() {
-        return clusterType;
-    }
-
-    public void setClusterType(Integer clusterType) {
-        this.clusterType = clusterType;
-    }
-
-    public String getClusterVersion() {
-        return clusterVersion;
-    }
-
-    public void setClusterVersion(String clusterVersion) {
-        this.clusterVersion = clusterVersion;
-    }
-
-    public int getOrdererCount() {
-        return ordererCount;
-    }
-
-    public void setOrdererCount(int ordererCount) {
-        this.ordererCount = ordererCount;
-    }
-
-    public int getClusterConsensusType() {
-        return clusterConsensusType;
-    }
-
-    public void setClusterConsensusType(int clusterConsensusType) {
-        this.clusterConsensusType = clusterConsensusType;
-    }
-
-    public int getStateDbType() {
-        return stateDbType;
-    }
-
-    public void setStateDbType(int stateDbType) {
-        this.stateDbType = stateDbType;
-    }
 }

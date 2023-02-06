@@ -1,7 +1,5 @@
 package org.bc.auto.listener.source;
 
-import org.bc.auto.listener.source.BlockChainEventSource;
-
 import java.util.List;
 
 public class BlockChainFabricNodeEventSource<E> implements BlockChainEventSource {

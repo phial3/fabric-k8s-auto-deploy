@@ -1,8 +1,11 @@
 package org.bc.auto.model.entity;
 
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class BCOrg implements Serializable {
 
     private static final long serialVersionUID = 5376058759633491230L;
@@ -30,83 +33,4 @@ public class BCOrg implements Serializable {
 
     private String clusterName;
 
-    public String getId() {
-        return id;
-    }
-
-    public String getCertId() {
-        return certId;
-    }
-
-    public void setCertId(String certId) {
-        this.certId = certId;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getOrgName() {
-        return orgName;
-    }
-
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
-    }
-
-    public String getOrgMspId() {
-        return orgMspId;
-    }
-
-    public void setOrgMspId(String orgMspId) {
-        this.orgMspId = orgMspId;
-    }
-
-    public Integer getOrgIsTls() {
-        return orgIsTls;
-    }
-
-    public void setOrgIsTls(Integer orgIsTls) {
-        this.orgIsTls = orgIsTls;
-    }
-
-    public Integer getOrgStatus() {
-        return orgStatus;
-    }
-
-    public void setOrgStatus(Integer orgStatus) {
-        this.orgStatus = orgStatus;
-    }
-
-    public Integer getOrgType() {
-        return orgType;
-    }
-
-    public void setOrgType(Integer orgType) {
-        this.orgType = orgType;
-    }
-
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getClusterId() {
-        return clusterId;
-    }
-
-    public void setClusterId(String clusterId) {
-        this.clusterId = clusterId;
-    }
-
-    public String getClusterName() {
-        return clusterName;
-    }
-
-    public void setClusterName(String clusterName) {
-        this.clusterName = clusterName;
-    }
 }
