@@ -1,7 +1,7 @@
 package org.bc.auto.exception;
 
-import org.bc.auto.code.ResultCode;
-import org.bc.auto.code.impl.SystemResultCode;
+import org.bc.auto.constant.ResultCode;
+import org.bc.auto.constant.impl.SystemResultCode;
 
 public class K8SException extends BaseRuntimeException{
     public K8SException() {

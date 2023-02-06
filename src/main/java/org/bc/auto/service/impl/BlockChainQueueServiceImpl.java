@@ -1,6 +1,7 @@
 package org.bc.auto.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import lombok.extern.slf4j.Slf4j;
 import org.bc.auto.dao.BCChannelOrgMapper;
 import org.bc.auto.dao.BCChannelOrgPeerMapper;
 import org.bc.auto.dao.BCClusterMapper;
@@ -19,50 +20,33 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@Slf4j
 @Service
 public class BlockChainQueueServiceImpl implements BlockChainQueueService {
 
-    private static final Logger logger = LoggerFactory.getLogger(BlockChainQueueServiceImpl.class);
-
+    @Resource
     private BCClusterMapper bcClusterMapper;
-    @Autowired
-    public void setBcClusterMapper(BCClusterMapper bcClusterMapper) {
-        this.bcClusterMapper = bcClusterMapper;
-    }
 
+    @Resource
     private CertService certService;
-    @Autowired
-    public void setCertService(CertService certService) {
-        this.certService = certService;
-    }
 
+    @Resource
     private NodeService nodeService;
-    @Autowired
-    public void setNodeService(NodeService nodeService) {
-        this.nodeService = nodeService;
-    }
 
+    @Resource
     private OrgService orgService;
-    @Autowired
-    public void setOrgService(OrgService orgService) {
-        this.orgService = orgService;
-    }
 
+    @Resource
     private BCChannelOrgMapper bcChannelOrgMapper;
-    @Autowired
-    public void setBcChannelOrgMapper(BCChannelOrgMapper bcChannelOrgMapper) {
-        this.bcChannelOrgMapper = bcChannelOrgMapper;
-    }
 
+    @Resource
     private BCChannelOrgPeerMapper bcChannelOrgPeerMapper;
-    @Autowired
-    public void setBcChannelOrgPeerMapper(BCChannelOrgPeerMapper bcChannelOrgPeerMapper) {
-        this.bcChannelOrgPeerMapper = bcChannelOrgPeerMapper;
-    }
+
 
     public void run(){
         //开始轮询等待任务加入任务队列
@@ -72,7 +56,7 @@ public class BlockChainQueueServiceImpl implements BlockChainQueueService {
                 //获取队列中的元素
                 blockChainEventSource = BlockChainShellQueueUtils.peek();
             }catch (InterruptedException e){
-                logger.info("[queue->exception] get the element error from shell queue，maybe system exception. please check it. exception info: \n",e);
+                log.info("[queue->exception] get the element error from shell queue，maybe system exception. please check it. exception info: \n",e);
             }
 
             //获取队列中元素的对象类型
@@ -81,7 +65,7 @@ public class BlockChainQueueServiceImpl implements BlockChainQueueService {
             switch (className){
                 //如果是组织的类型，进行组织的脚本执行
                 case "BlockChainFabricOrgEventSource" : {
-                    logger.debug("[queue->org] element's type is org，this is to get the org cert.");
+                    log.debug("[queue->org] element's type is org，this is to get the org cert.");
                     //获取集群对象，以获取更多的集群信息
                     //并对返回的结果进行判断
                     BlockChainFabricOrgEventSource chainFabricOrgEventSource = (BlockChainFabricOrgEventSource) blockChainEventSource;
@@ -97,7 +81,7 @@ public class BlockChainQueueServiceImpl implements BlockChainQueueService {
                     break;
                 }
                 case "BlockChainFabricNodeEventSource" : {
-                    logger.debug("[queue->node] element's type is node，this is to get the node cert.");
+                    log.debug("[queue->node] element's type is node，this is to get the node cert.");
                     BlockChainFabricNodeEventSource<BCNode> bcNodeBlockChainArrayList = (BlockChainFabricNodeEventSource<BCNode>) blockChainEventSource;
                     List<BCNode> bcNodeList = bcNodeBlockChainArrayList.geteList();
                     //为节点申请节点证书
@@ -112,7 +96,7 @@ public class BlockChainQueueServiceImpl implements BlockChainQueueService {
                     //监听节点事件，如果是orderer节点的情况下。
                     //需要创建创世区块等文件
                     if(bcNodeList.get(0).getNodeType() == 1){
-                        logger.debug("[queue->node] element's type is node and node type is orderer，need to create genesis.block file");
+                        log.debug("[queue->node] element's type is node and node type is orderer，need to create genesis.block file");
                         BCCluster bcCluster = bcClusterMapper.getClusterById(bcNodeList.get(0).getClusterId());
                         BCOrg bcOrg =orgService.getOrgByOrgId(bcNodeList.get(0).getOrgId());
                         HyperledgerFabricComponentsStartUtils.buildFabricChain(bcCluster,bcOrg);
@@ -121,11 +105,11 @@ public class BlockChainQueueServiceImpl implements BlockChainQueueService {
                     //启动节点
                     //通知K8S启动对应的pod节点,发布监听
                     new BlockChainEvent(new BlockChainFabricNodeListener(),bcNodeBlockChainArrayList).doEven();
-                    logger.info("[queue->node] element's type is node，start node pod success");
+                    log.info("[queue->node] element's type is node，start node pod success");
                     break;
                 }
                 case "BlockChainFabricChannelEventSource" : {
-                    logger.info("[queue->channel] 执行创建通道脚本");
+                    log.info("[queue->channel] 执行创建通道脚本");
                     //获取集群对象，以获取更多的集群信息
                     //并对返回的结果进行判断
                     BlockChainFabricChannelEventSource blockChainFabricChannelEventSource = (BlockChainFabricChannelEventSource) blockChainEventSource;
@@ -153,7 +137,7 @@ public class BlockChainQueueServiceImpl implements BlockChainQueueService {
                     break;
                 }
                 case "BlockChainFabricJoinChannelEventSource" :
-                    logger.info("[queue->join] 执行加入节点脚本");
+                    log.info("[queue->join] 执行加入节点脚本");
                     BlockChainFabricJoinChannelEventSource blockChainFabricJoinChannelEventSource = (BlockChainFabricJoinChannelEventSource) blockChainEventSource;
                     JSONArray jsonArray = blockChainFabricJoinChannelEventSource.getJsonArray();
                     List<BCChannelOrgPeer> bcChannelOrgPeerList = blockChainFabricJoinChannelEventSource.getBcChannelOrgPeerList();

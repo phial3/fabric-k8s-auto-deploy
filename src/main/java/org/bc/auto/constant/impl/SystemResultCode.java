@@ -1,6 +1,6 @@
-package org.bc.auto.code.impl;
+package org.bc.auto.constant.impl;
 
-import org.bc.auto.code.ResultCode;
+import org.bc.auto.constant.ResultCode;
 
 public enum SystemResultCode implements ResultCode {
 

@@ -19,5 +19,10 @@
          VALUES (#{id},#{clusterId},#{clusterName},#{channelName},#{channelStatus},#{isBlockListener});
     </insert>
 
+    <select id="getByChannelName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from bc_channel where channel_name = #{channelName};
+    </select>
 
 </mapper>

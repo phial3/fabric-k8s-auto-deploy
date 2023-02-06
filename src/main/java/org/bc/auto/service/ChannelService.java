@@ -1,10 +1,10 @@
 package org.bc.auto.service;
 
-import com.alibaba.fastjson.JSONObject;
 import org.bc.auto.exception.BaseRuntimeException;
+import org.bc.auto.model.vo.ChannelVo;
 
 public interface ChannelService {
 
-    void createChannel(JSONObject jsonObject)throws BaseRuntimeException;
+    void createChannel(ChannelVo vo)throws BaseRuntimeException;
 
 }

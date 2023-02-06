@@ -1,4 +1,4 @@
-package org.bc.auto.code;
+package org.bc.auto.constant;
 
 public interface ResultCode {
     int getCode();

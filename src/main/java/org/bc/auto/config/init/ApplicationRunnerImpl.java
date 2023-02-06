@@ -1,4 +1,4 @@
-package org.bc.auto;
+package org.bc.auto.config.init;
 
 import org.bc.auto.service.BlockChainQueueService;
 import org.bc.auto.utils.ThreadPoolManager;
@@ -9,17 +9,16 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Component
 public class ApplicationRunnerImpl implements ApplicationRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicationRunnerImpl.class);
 
+    @Resource
     private BlockChainQueueService blockChainQueueService;
 
-    @Autowired
-    public void setBlockChainQueueService(BlockChainQueueService blockChainQueueService) {
-        this.blockChainQueueService = blockChainQueueService;
-    }
 
     public void run(ApplicationArguments args) throws Exception {
         logger.info("[application->init]服务启动完成，开始加载线程执行监听脚本队列");

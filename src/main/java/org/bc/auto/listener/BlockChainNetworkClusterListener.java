@@ -2,9 +2,9 @@ package org.bc.auto.listener;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.bc.auto.code.impl.BlockChainResultCode;
-import org.bc.auto.code.impl.K8SResultCode;
-import org.bc.auto.code.impl.ValidatorResultCode;
+import org.bc.auto.constant.impl.BlockChainResultCode;
+import org.bc.auto.constant.impl.K8SResultCode;
+import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.config.BlockChainAutoConstant;
 import org.bc.auto.config.BlockChainFabricImagesConstant;
 import org.bc.auto.config.BlockChainK8SConstant;
@@ -13,12 +13,16 @@ import org.bc.auto.exception.ValidatorException;
 import org.bc.auto.listener.source.BlockChainFabricClusterEventSource;
 import org.bc.auto.model.entity.BCCluster;
 import org.bc.auto.model.entity.BCOrg;
-import org.bc.auto.listener.source.BlockChainFabricNodeEventSource;
+import org.bc.auto.model.vo.NodeVo;
+import org.bc.auto.model.vo.OrgVo;
 import org.bc.auto.service.NodeService;
 import org.bc.auto.service.OrgService;
 import org.bc.auto.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockChainNetworkClusterListener implements BlockChainListener{
 
@@ -66,13 +70,14 @@ public class BlockChainNetworkClusterListener implements BlockChainListener{
 
             //通过SpringBeanUtil获取spring的service对象
             OrgService orgService = SpringBeanUtil.getBean(OrgService.class);
-            JSONObject ordererJsonObject = new JSONObject();
-            ordererJsonObject.put("clusterId",bcCluster.getId());
-            ordererJsonObject.put("orgName","Orderer");
-            ordererJsonObject.put("orgIsTls",1);
-            ordererJsonObject.put("orgType",1);
+
+            OrgVo orgVo = new OrgVo();
+            orgVo.setClusterId(bcCluster.getId());
+            orgVo.setOrgName("Orderer");
+            orgVo.setOrgIsTls(1);
+            orgVo.setOrgType(1);
             //得到Orderer组织的返回结果
-            BCOrg bcOrg = orgService.createOrg(ordererJsonObject);
+            BCOrg bcOrg = orgService.createOrg(orgVo);
             logger.debug("[async->cluster] create blockchain's cluster, default to create Orderer org, cluster name is :{},org name is :{}, org type is :{}",
                     bcCluster.getClusterName(),bcOrg.getOrgName(),bcOrg.getOrgType());
             ValidatorUtils.isNotNull(bcOrg);
@@ -81,23 +86,29 @@ public class BlockChainNetworkClusterListener implements BlockChainListener{
             //创建集群的时候，需要默认的创建Orderer组织,Orderer组织不需要用户手动创建
             //创建完Orderer组织之后，需要创建orderer节点
             //创建Orderer节点，获取orderer节点列表相关信息
-            JSONArray jsonArray = new JSONArray();
+
+            List<NodeVo.NodeParam> voList = new ArrayList<>();
             NodeService nodeService = SpringBeanUtil.getBean(NodeService.class);
             //确定orderer节点的次数
             for(int i=0 ; i<bcCluster.getOrdererCount() ;i++){
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("clusterId",bcCluster.getId());
+                NodeVo.NodeParam node = new NodeVo.NodeParam();
+                node.setClusterId(bcCluster.getId());
+
                 //orderer节点名称规则：以orderer开头后面加节点目标数 如：orderer1、orderer2
-                jsonObject.put("nodeName","orderer"+i);
+                node.setNodeName("orderer"+i);
+
                 //此处固定为orderer节点，所以节点类型为1
-                jsonObject.put("nodeType",1);
-                jsonObject.put("orgId",bcOrg.getId());
-                jsonObject.put("orgName",bcOrg.getOrgName());
-                jsonArray.add(jsonObject);
+                node.setNodeType(1);
+                node.setOrgId(bcOrg.getId());
+                node.setOrgName(bcOrg.getOrgName());
+                voList.add(node);
                 logger.debug("[async->cluster] create blockchain's cluster, default to create Orderer's node, cluster name is :{},node name is :{}, node type is :{}",
                         bcCluster.getClusterName(),"orderer"+i,1);
             }
-            boolean flag = nodeService.createNode(jsonArray);
+
+            NodeVo nodeVo = new NodeVo();
+            nodeVo.setNodeList(voList);
+            boolean flag = nodeService.createNode(nodeVo);
             logger.info("[async->cluster] create blockchain's cluster, default to create Orderer's node success, cluster name is :{},node count is :{}, node type is :{}",
                     bcCluster.getClusterName(),bcCluster.getOrdererCount(),1);
             if(!flag){

@@ -1,13 +1,14 @@
 package org.bc.auto.model.vo;
 
-import org.bc.auto.code.ResultCode;
-import org.bc.auto.code.impl.SystemResultCode;
+import lombok.Data;
+import org.bc.auto.constant.ResultCode;
+import org.bc.auto.constant.impl.SystemResultCode;
 
+@Data
 public class Result<T> {
 
     private Integer code;
     private String msg;
-    private String devMsg;
     private T data;
 
     public Result() {
@@ -60,51 +61,11 @@ public class Result<T> {
         return new Result(ResultCode);
     }
 
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public String getDevMsg() {
-        return devMsg;
-    }
-
-    public void setDevMsg(String devMsg) {
-        this.devMsg = devMsg;
-    }
 
     public void setResultCode(ResultCode ResultCode) {
         this.code = ResultCode.getCode();
         this.msg = ResultCode.getMsg();
     }
 
-    @Override
-    public String toString() {
-        return "Result{" +
-                "code=" + code +
-                ", msg='" + msg + '\'' +
-                ", devMsg='" + devMsg + '\'' +
-                ", data=" + data +
-                '}';
-    }
 
 }

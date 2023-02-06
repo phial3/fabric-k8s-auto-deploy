@@ -1,53 +1,45 @@
 package org.bc.auto.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import org.bc.auto.code.impl.ValidatorResultCode;
+import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.dao.BCClusterMapper;
 import org.bc.auto.dao.BCOrgMapper;
 import org.bc.auto.exception.BaseRuntimeException;
 import org.bc.auto.exception.ValidatorException;
-import org.bc.auto.listener.source.BlockChainFabricNodeEventSource;
 import org.bc.auto.listener.source.BlockChainFabricOrgEventSource;
 import org.bc.auto.model.entity.BCCluster;
 import org.bc.auto.model.entity.BCOrg;
+import org.bc.auto.model.vo.OrgVo;
 import org.bc.auto.service.NodeService;
 import org.bc.auto.service.OrgService;
 import org.bc.auto.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
 public class OrgServiceImpl implements OrgService {
     private static final Logger logger = LoggerFactory.getLogger(OrgService.class);
 
+    @Resource
     private BCOrgMapper bcOrgMapper;
-    @Autowired
-    public void setBcOrgMapper(BCOrgMapper bcOrgMapper) {
-        this.bcOrgMapper = bcOrgMapper;
-    }
 
+    @Resource
     private BCClusterMapper bcClusterMapper;
-    @Autowired
-    public void setBcClusterMapper(BCClusterMapper bcClusterMapper) {
-        this.bcClusterMapper = bcClusterMapper;
-    }
 
+    @Resource
     private NodeService nodeService;
-    @Autowired
-    public void setNodeService(NodeService nodeService) {
-        this.nodeService = nodeService;
-    }
+
 
     @Transactional
-    public BCOrg createOrg(JSONObject jsonObject)throws BaseRuntimeException {
+    public BCOrg createOrg(OrgVo vo)throws BaseRuntimeException {
 
         //获取集群编号用来确认在哪个集群中创建组织
-        String clusterId = jsonObject.getString("clusterId");
+        String clusterId = vo.getClusterId();
         ValidatorUtils.isNotNull(clusterId, ValidatorResultCode.VALIDATOR_CLUSTER_ID_NULL);
         logger.debug("[org->create] create blockchain's org, get the cluster id is :{}",clusterId);
 
@@ -59,7 +51,7 @@ public class OrgServiceImpl implements OrgService {
         logger.debug("[org->create] create blockchain's org, from database the cluster name is :{}",clusterName);
 
         //获取需要创建的组织名称
-        String orgName = jsonObject.getString("orgName");
+        String orgName = vo.getOrgName();
         ValidatorUtils.isNotNull(orgName, ValidatorResultCode.VALIDATOR_ORG_NAME_NULL);
         logger.debug("[org->create] create blockchain's org, get the org name is :{}",orgName);
         //判断组织名称是否匹配
@@ -78,8 +70,8 @@ public class OrgServiceImpl implements OrgService {
         //自动拼接组织的Msp
         String orgMspId = String.join("",orgName,"MSP");
         logger.debug("[org->create] create blockchain's org, get the org msp id is :{}",orgMspId);
-        int orgIsTls = jsonObject.getIntValue("orgIsTls");
-        int orgType = jsonObject.getIntValue("orgType");
+        int orgIsTls = vo.getOrgIsTls();
+        int orgType = vo.getOrgType();
 
         logger.info("[org->create] create blockchain's org, get the org name is :{}, org's msp id is :{},cluster id is :{}, cluster name is :{}",
                 orgName, orgMspId, clusterId, clusterName);

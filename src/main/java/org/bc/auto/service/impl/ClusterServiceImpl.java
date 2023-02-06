@@ -1,7 +1,7 @@
 package org.bc.auto.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import org.bc.auto.code.impl.ValidatorResultCode;
+import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.dao.BCClusterInfoMapper;
 import org.bc.auto.dao.BCClusterMapper;
 import org.bc.auto.exception.BaseRuntimeException;
@@ -11,16 +11,17 @@ import org.bc.auto.listener.BlockChainNetworkClusterListener;
 import org.bc.auto.listener.source.BlockChainFabricClusterEventSource;
 import org.bc.auto.model.entity.BCCluster;
 import org.bc.auto.model.entity.BCClusterInfo;
+import org.bc.auto.model.vo.ClusterVo;
 import org.bc.auto.service.ClusterService;
 import org.bc.auto.utils.DateUtils;
 import org.bc.auto.utils.StringUtils;
 import org.bc.auto.utils.ValidatorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
@@ -28,29 +29,26 @@ public class ClusterServiceImpl implements ClusterService {
 
     private static final Logger logger = LoggerFactory.getLogger(ClusterService.class);
 
+    @Resource
     private BCClusterMapper bcClusterMapper;
-    @Autowired
-    public void setBcClusterDao(BCClusterMapper bcClusterMapper){
-        this.bcClusterMapper = bcClusterMapper;
-    }
 
+    @Resource
     private BCClusterInfoMapper bcClusterInfoMapper;
-    @Autowired
-    public void setBcClusterInfoMapper(BCClusterInfoMapper bcClusterInfoMapper) {
-        this.bcClusterInfoMapper = bcClusterInfoMapper;
-    }
+
 
     @Override
     @Transactional
-    public BCCluster createCluster(JSONObject jsonObject) throws BaseRuntimeException {
+    public BCCluster createCluster(ClusterVo vo) throws BaseRuntimeException {
+
         //检查集群名称是否为空
-        String clusterName = jsonObject.getString("clusterName");
+        String clusterName = vo.getClusterName();
         ValidatorUtils.isNotNull(clusterName, ValidatorResultCode.VALIDATOR_CLUSTER_NAME_NULL);
         if(!ValidatorUtils.isMatches(clusterName,ValidatorUtils.FABRIC_CLUSTER_NAME_REGEX)){
             logger.error("[cluster->create] create blockchain's cluster error，make sure cluster name '{}' accord with naming convention",clusterName);
             throw new ValidatorException(ValidatorResultCode.VALIDATOR_CLUSTER_NAME_NOT_MATCH);
         }
         logger.debug("[cluster->create] create blockchain's cluster，get cluster name is :{}",clusterName);
+
         //根据获取到的集群检查集群名称是否重复
         List<BCCluster> clusterList = bcClusterMapper.getClusterByClusterName(clusterName);
         //假如根据cluster的名字获取到的对象不为空，则证明重复
@@ -58,12 +56,14 @@ public class ClusterServiceImpl implements ClusterService {
             logger.error("[cluster->create] create blockchain's cluster，make sure cluster name '{}' is not exists",clusterName);
             throw new ValidatorException(ValidatorResultCode.VALIDATOR_CLUSTER_NAME_RE);
         }
+
         //检查安装的集群版本是否为空
-        String clusterVersion = jsonObject.getString("clusterVersion");
+        String clusterVersion = vo.getClusterVersion();
         ValidatorUtils.isNotNull(clusterVersion, ValidatorResultCode.VALIDATOR_CLUSTER_VERSION_NULL);
         logger.debug("[cluster->create] create blockchain's cluster，get cluster version is :{}",clusterVersion);
+
         //检查安装的集群类型是否为空，1：Fabric，2：QuoRom
-        int clusterType = jsonObject.getIntValue("clusterType");
+        int clusterType = vo.getClusterType();
         logger.debug("[cluster->create] create blockchain's cluster，get the cluster type is :{}, value 1 is Fabric, value 2 is QuoRom",clusterType);
         if(!ValidatorUtils.isGreaterThanZero(clusterType)){
             logger.error("[cluster->create] create blockchain's cluster，please check cluster type is right:{}",clusterType);
@@ -100,6 +100,7 @@ public class ClusterServiceImpl implements ClusterService {
         }
         BlockChainFabricClusterEventSource blockChainFabricClusterEventSource = new BlockChainFabricClusterEventSource();
         blockChainFabricClusterEventSource.setBcCluster(bcCluster);
+
         //触发监听事件，去创建集群
         new BlockChainEvent(new BlockChainNetworkClusterListener(),blockChainFabricClusterEventSource).doEven();
 

@@ -1,7 +1,7 @@
 package org.bc.auto.listener;
 
 import com.alibaba.fastjson.JSONObject;
-import org.bc.auto.code.impl.ValidatorResultCode;
+import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.dao.BCClusterMapper;
 import org.bc.auto.exception.K8SException;
 import org.bc.auto.exception.ValidatorException;
@@ -11,7 +11,6 @@ import org.bc.auto.model.entity.BCOrg;
 import org.bc.auto.utils.BlockChainShellQueueUtils;
 import org.bc.auto.utils.HyperledgerFabricComponentsStartUtils;
 import org.bc.auto.utils.SpringBeanUtil;
-import org.bc.auto.utils.ThreadPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

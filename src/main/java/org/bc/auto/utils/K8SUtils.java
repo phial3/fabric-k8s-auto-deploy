@@ -1,6 +1,6 @@
 package org.bc.auto.utils;
 
-import org.bc.auto.code.impl.K8SResultCode;
+import org.bc.auto.constant.impl.K8SResultCode;
 import org.bc.auto.config.BlockChainAutoConstant;
 import org.bc.auto.exception.BaseRuntimeException;
 import org.bc.auto.exception.K8SException;

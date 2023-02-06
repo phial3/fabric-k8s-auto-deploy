@@ -7,15 +7,28 @@ spring:
     name: fabric-k8s-auto-deploy
   main:
     allow-bean-definition-overriding: true
-  h2:
-    console:
-      path: /h2-console #进入h2 web操作界面的路径
-      enabled: true #开启h2 web界面
+  #  h2:
+  #    console:
+  #      path: /h2-console #进入h2 web操作界面的路径
+  #      enabled: true #开启h2 web界面
   datasource:
-    url: jdbc:h2:mem:bc-auto
-    driver-class-name: org.h2.Driver
-    username: root
-    password: root
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8"
+    username: "root"
+    password: "123456aA#"
+    hikari:
+      connection-timeout: 5000
+      validation-timeout: 3000
+      idle-timeout: 10000
+      max-lifetime: 10000
+      maximum-pool-size: 10
+      minimum-idle: 5
+    # h2配置
+    # url: jdbc:h2:mem:bc-auto
+    # driver-class-name: org.h2.Driver
+    # username: root
+    # password: root
     #程序运行时，使用schema.sql来创建数据库中的表
     #程序运行时，使用data.sql来创建初始数据
     #data: classpath:data.sql
@@ -40,31 +53,30 @@ mybatis:
 
 logging:
   pattern:
-    console: "%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger{80}.%M:%L - %msg%n"
+    console: "%d{yyyy-MM-dd_HH:mm:ss} [%thread] %-5level %logger{80}.%M:%L - %msg%n"
   level:
     root: debug
-    com.ks: debug
     org.springframework.web: debug
     org.springframework.security: debug
     java.sql.PreparedStatement: debug
     org.apache.ibatis: debug
   file:
-    path: /home/work_space/logs/
+    path: ./logs/
   logback:
     rollingpolicy:
       max-file-size: 1GB
 
 bc-auto:
   nfs-host: 127.0.0.1
-  nfs-path: /home/nfs_data
+  nfs-path: ./nfs_data
   pv-suffix: pv
   pvc-suffix: pvc
   volume-data-suffix: data
   pdb-suffix: pdb
   msp-ca-name: msp-root-ca
   tls-ca-name: tls-root-ca
-  k8s-work-path: /work/share
-  k8s-data-path: /data/auto
+  k8s-work-path: ./work/share
+  k8s-data-path: ./data/auto
   #  generate-certs-root-path: /data/app
   #  save-certs-root-path: /data/auto
   #  fabric-tools-path: /data/share/bin/v1.4.5

@@ -1,7 +1,7 @@
 package org.bc.auto.utils;
 
-import org.bc.auto.code.ResultCode;
-import org.bc.auto.code.impl.ValidatorResultCode;
+import org.bc.auto.constant.ResultCode;
+import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.exception.BaseRuntimeException;
 import org.bc.auto.exception.ValidatorException;
 import org.slf4j.Logger;
