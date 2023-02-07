@@ -5,7 +5,7 @@ import org.bc.auto.dao.BCClusterMapper;
 import org.bc.auto.dao.BCOrgMapper;
 import org.bc.auto.exception.BaseRuntimeException;
 import org.bc.auto.exception.ValidatorException;
-import org.bc.auto.listener.source.BlockChainFabricOrgEventSource;
+import org.bc.auto.listener.source.FabricOrgEventSource;
 import org.bc.auto.model.entity.BCCluster;
 import org.bc.auto.model.entity.BCOrg;
 import org.bc.auto.model.vo.OrgVo;
@@ -100,9 +100,9 @@ public class OrgService  {
         //  2. 可以在redis/db设置独立的锁形式，防止并发争抢（auto集群的情况下，并发添加组织可能会造成影响）。
         //  3. 此队列替换为消息队列控制，单次消费一条消息。
         //  4. 改变添加方式用定时任务的形式对库里的数据进行调度处理。
-        BlockChainFabricOrgEventSource blockChainFabricOrgEventSource = new BlockChainFabricOrgEventSource();
-        blockChainFabricOrgEventSource.setBcOrg(bcOrg);
-        boolean flag = BlockChainShellQueueUtils.add(blockChainFabricOrgEventSource);
+        FabricOrgEventSource fabricOrgEventSource = new FabricOrgEventSource();
+        fabricOrgEventSource.setBcOrg(bcOrg);
+        boolean flag = BlockChainShellQueueUtils.add(fabricOrgEventSource);
         if(!flag){
             logger.error("[org->create] create blockchain's org，join task queue error. check error and retry");
             throw new ValidatorException(ValidatorResultCode.VALIDATOR_ORG_QUEUE_ERROR);

@@ -6,8 +6,8 @@ import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.dao.BCNodeMapper;
 import org.bc.auto.exception.BaseRuntimeException;
 import org.bc.auto.exception.ValidatorException;
-import org.bc.auto.listener.source.BlockChainFabricJoinChannelEventSource;
-import org.bc.auto.listener.source.BlockChainFabricNodeEventSource;
+import org.bc.auto.listener.source.FabricJoinChannelEventSource;
+import org.bc.auto.listener.source.FabricNodeEventSource;
 import org.bc.auto.model.entity.BCChannelOrgPeer;
 import org.bc.auto.model.entity.BCCluster;
 import org.bc.auto.model.entity.BCNode;
@@ -93,10 +93,10 @@ public class NodeService  {
             throw new ValidatorException(ValidatorResultCode.VALIDATOR_NODE_INSERT_ERROR);
         }
 
-        BlockChainFabricNodeEventSource<BCNode> blockChainFabricNodeEventSource = new BlockChainFabricNodeEventSource<>();
-        blockChainFabricNodeEventSource.seteList(bcNodeInsertList);
+        FabricNodeEventSource<BCNode> fabricNodeEventSource = new FabricNodeEventSource<>();
+        fabricNodeEventSource.setEList(bcNodeInsertList);
 
-        return BlockChainShellQueueUtils.add(blockChainFabricNodeEventSource);
+        return BlockChainShellQueueUtils.add(fabricNodeEventSource);
     }
 
     public int updateNode(BCNode bcNode) throws BaseRuntimeException {
@@ -157,10 +157,10 @@ public class NodeService  {
         }
 
 
-        BlockChainFabricJoinChannelEventSource blockChainFabricJoinChannelEventSource = new BlockChainFabricJoinChannelEventSource();
-        blockChainFabricJoinChannelEventSource.setJsonArray(jsonArray);
-        blockChainFabricJoinChannelEventSource.setBcChannelOrgPeerList(bcChannelOrgPeerList);
-        boolean flag = BlockChainShellQueueUtils.add(blockChainFabricJoinChannelEventSource);
+        FabricJoinChannelEventSource fabricJoinChannelEventSource = new FabricJoinChannelEventSource();
+        fabricJoinChannelEventSource.setJsonArray(jsonArray);
+        fabricJoinChannelEventSource.setBcChannelOrgPeerList(bcChannelOrgPeerList);
+        boolean flag = BlockChainShellQueueUtils.add(fabricJoinChannelEventSource);
 
         return flag;
     }

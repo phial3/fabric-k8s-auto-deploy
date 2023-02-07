@@ -1,6 +1,6 @@
 # 服务器端口号
 server:
-  port: 60000
+  port: 8180
 
 spring:
   application:
@@ -53,12 +53,11 @@ mybatis:
 
 logging:
   pattern:
-    console: "%d{yyyy-MM-dd_HH:mm:ss} [%thread] %-5level %logger{80}.%M:%L - %msg%n"
+    console: "%d{yyyy-MM-dd_HH:mm:ss} [%thread] [%-5level] %logger{80}.%M:%L - %msg%n"
   level:
     root: debug
-    org.springframework.web: debug
-    org.springframework.security: debug
-    java.sql.PreparedStatement: debug
+    org.springframework.web: info
+    org.springframework.security: info
     org.apache.ibatis: debug
   file:
     path: ./logs/
@@ -75,7 +74,7 @@ bc-auto:
   pdb-suffix: pdb
   msp-ca-name: "msp-root-ca"
   tls-ca-name: "tls-root-ca"
-  k8s-config-path: "~/.kube/config"
+  k8s-config-path: "/Users/admin/.kube/config"
   k8s-work-path: "./work/share"
   k8s-data-path: "./data/auto"
   #  generate-certs-root-path: /data/app

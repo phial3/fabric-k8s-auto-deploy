@@ -1,23 +1,24 @@
 package org.bc.auto.listener;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import org.bc.auto.constant.impl.BlockChainResultCode;
-import org.bc.auto.constant.impl.K8SResultCode;
-import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.config.BlockChainAutoConstant;
 import org.bc.auto.config.BlockChainFabricImagesConstant;
 import org.bc.auto.config.BlockChainK8SConstant;
+import org.bc.auto.constant.impl.BlockChainResultCode;
+import org.bc.auto.constant.impl.K8SResultCode;
+import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.exception.K8SException;
 import org.bc.auto.exception.ValidatorException;
-import org.bc.auto.listener.source.BlockChainFabricClusterEventSource;
+import org.bc.auto.listener.source.FabricClusterEventSource;
 import org.bc.auto.model.entity.BCCluster;
 import org.bc.auto.model.entity.BCOrg;
 import org.bc.auto.model.vo.NodeVo;
 import org.bc.auto.model.vo.OrgVo;
 import org.bc.auto.service.NodeService;
 import org.bc.auto.service.OrgService;
-import org.bc.auto.utils.*;
+import org.bc.auto.utils.HyperledgerFabricComponentsStartUtils;
+import org.bc.auto.utils.K8SUtils;
+import org.bc.auto.utils.SpringBeanUtil;
+import org.bc.auto.utils.ValidatorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class BlockChainNetworkClusterListener implements BlockChainListener{
     public void doEven(BlockChainEvent blockChainEven) {
         try{
             //获取需要创建的集群对象
-            BlockChainFabricClusterEventSource blockChainFabricClusterEventSource =  (BlockChainFabricClusterEventSource)blockChainEven.getBlockChainEventSource();
+            FabricClusterEventSource blockChainFabricClusterEventSource =  (FabricClusterEventSource)blockChainEven.getBlockChainEventSource();
             BCCluster bcCluster = blockChainFabricClusterEventSource.getBcCluster();
             //创建集群对应的pv,目前支持nfs的方式。
             //规则："集群名称"+"-pv"

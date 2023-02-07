@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bc.auto.config.BlockChainFabricConstructConstant;
 import org.bc.auto.config.BlockChainFabricImagesConstant;
 import org.bc.auto.config.BlockChainK8SConstant;
-import org.bc.auto.listener.source.BlockChainFabricNodeEventSource;
+import org.bc.auto.listener.source.FabricNodeEventSource;
 import org.bc.auto.model.entity.BCCluster;
 import org.bc.auto.model.entity.BCNode;
 import org.bc.auto.model.vo.FabricConstructVo;
@@ -14,8 +14,6 @@ import org.bc.auto.service.ClusterService;
 import org.bc.auto.service.NodeService;
 import org.bc.auto.utils.K8SUtils;
 import org.bc.auto.utils.SpringBeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -29,8 +27,8 @@ public class BlockChainFabricNodeListener implements BlockChainListener {
 
         //开始启动K8S的节点(分为Orderer节点和普通的Peer节点)
         //获取事件的参数实体对象
-        BlockChainFabricNodeEventSource<BCNode> bcNodeBlockChainArrayList = (BlockChainFabricNodeEventSource<BCNode>) blockChainEven.getBlockChainEventSource();
-        List<BCNode> nodeList = bcNodeBlockChainArrayList.geteList();
+        FabricNodeEventSource<BCNode> bcNodeBlockChainArrayList = (FabricNodeEventSource<BCNode>) blockChainEven.getBlockChainEventSource();
+        List<BCNode> nodeList = bcNodeBlockChainArrayList.getEList();
 
         for (BCNode bcNode : nodeList) {
             //获取集群对象

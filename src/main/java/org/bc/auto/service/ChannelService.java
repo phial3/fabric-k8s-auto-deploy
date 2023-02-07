@@ -6,7 +6,7 @@ import org.bc.auto.dao.BCClusterMapper;
 import org.bc.auto.dao.BCOrgMapper;
 import org.bc.auto.exception.BaseRuntimeException;
 import org.bc.auto.exception.ValidatorException;
-import org.bc.auto.listener.source.BlockChainFabricChannelEventSource;
+import org.bc.auto.listener.source.FabricChannelEventSource;
 import org.bc.auto.model.entity.BCChannel;
 import org.bc.auto.model.entity.BCCluster;
 import org.bc.auto.model.entity.BCOrg;
@@ -87,11 +87,11 @@ public class ChannelService  {
         //主要用于生成Orderer组织的MSP证书和TLS的证书
         //在同一个集群中，创建Orderer组织的脚本得确保是优先执行；理论上队列的特性只要确定该任务是先加入队列即可。
         //如果生产环境在集群、并发情况下，并且添加Peer组织无法控制；可以按照集群的状态决定是否创建peer的组织。
-        BlockChainFabricChannelEventSource blockChainFabricChannelEventSource = new BlockChainFabricChannelEventSource();
-        blockChainFabricChannelEventSource.setBcChannel(bcChannel);
-        blockChainFabricChannelEventSource.setBcCluster(bcCluster);
-        blockChainFabricChannelEventSource.setBcOrgs(bcOrgList);
-        boolean flag = BlockChainShellQueueUtils.add(blockChainFabricChannelEventSource);
+        FabricChannelEventSource fabricChannelEventSource = new FabricChannelEventSource();
+        fabricChannelEventSource.setBcChannel(bcChannel);
+        fabricChannelEventSource.setBcCluster(bcCluster);
+        fabricChannelEventSource.setBcOrgs(bcOrgList);
+        boolean flag = BlockChainShellQueueUtils.add(fabricChannelEventSource);
         if (!flag) {
             logger.error("[async] 通道加入任务队列错误，请确认错误信息。");
             throw new ValidatorException(ValidatorResultCode.VALIDATOR_ORG_QUEUE_ERROR);
