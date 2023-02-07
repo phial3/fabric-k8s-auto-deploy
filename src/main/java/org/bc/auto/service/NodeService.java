@@ -69,7 +69,6 @@ public class NodeService  {
                 throw new ValidatorException(ValidatorResultCode.VALIDATOR_NODE_NAME_RE);
             }
 
-            int nodeType = param.getNodeType();
             String orgId = param.getOrgId();
             logger.info("[node->create] create blockchain's node, get the node name is :{},cluster id is :{}, org id is :{}",
                     nodeName, clusterId, orgId);
@@ -79,7 +78,7 @@ public class NodeService  {
             bcNode.setNodeName(nodeName);
             bcNode.setClusterId(clusterId);
             bcNode.setOrgId(orgId);
-            bcNode.setNodeType(nodeType);
+            bcNode.setNodeType(param.getNodeType());
             bcNode.setOrgName(param.getOrgName());
             bcNode.setCreateTime(DateUtils.getCurrentMillisTimeStamp());
 

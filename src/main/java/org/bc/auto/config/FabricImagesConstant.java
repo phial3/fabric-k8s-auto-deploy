@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 
-public class BlockChainFabricImagesConstant {
+public class FabricImagesConstant {
 
-    private static final Logger logger = LoggerFactory.getLogger(BlockChainFabricImagesConstant.class);
+    private static final Logger logger = LoggerFactory.getLogger(FabricImagesConstant.class);
 
     /**
      * 确定fabric区块链组件的镜像前缀是以 hyperledger 开头

@@ -1,6 +1,6 @@
 package org.bc.auto.config;
 
-public interface BlockChainFabricConstructConstant {
+public interface FabricConstructConstant {
 
     String GOLANG = "GOLANG";
     String JAVA = "JAVA";

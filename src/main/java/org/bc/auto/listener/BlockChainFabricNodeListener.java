@@ -3,8 +3,8 @@ package org.bc.auto.listener;
 import io.kubernetes.client.custom.IntOrString;
 import io.kubernetes.client.openapi.models.*;
 import lombok.extern.slf4j.Slf4j;
-import org.bc.auto.config.BlockChainFabricConstructConstant;
-import org.bc.auto.config.BlockChainFabricImagesConstant;
+import org.bc.auto.config.FabricConstructConstant;
+import org.bc.auto.config.FabricImagesConstant;
 import org.bc.auto.config.BlockChainK8SConstant;
 import org.bc.auto.listener.source.FabricNodeEventSource;
 import org.bc.auto.model.entity.BCCluster;
@@ -49,7 +49,7 @@ public class BlockChainFabricNodeListener implements BlockChainListener {
                 fabricConstructVo.setOrgName(bcNode.getOrgName());
                 fabricConstructVo.setOrgMspId(String.join("", bcNode.getOrgName(), "MSP"));
                 fabricConstructVo.setTlsEnable("true");
-                fabricConstructVo.setImageName(BlockChainFabricImagesConstant.getFabricOrdereImage(bcCluster.getClusterVersion()));
+                fabricConstructVo.setImageName(FabricImagesConstant.getFabricOrdereImage(bcCluster.getClusterVersion()));
                 bcNode = startOrderer(fabricConstructVo, bcNode);
             } else {
                 fabricConstructVo.setCertPath(bcCluster.getClusterName() + "/crypto-config/peerOrganizations/" + bcNode.getOrgName() + "-" + bcCluster.getClusterName() + "/peers/" + fabricConstructVo.getNodeDomain());
@@ -61,7 +61,7 @@ public class BlockChainFabricNodeListener implements BlockChainListener {
                 fabricConstructVo.setOrgName(bcNode.getOrgName());
                 fabricConstructVo.setOrgMspId(String.join("", bcNode.getOrgName(), "MSP"));
                 fabricConstructVo.setTlsEnable("true");
-                fabricConstructVo.setImageName(BlockChainFabricImagesConstant.getFabricPeerImage(bcCluster.getClusterVersion()));
+                fabricConstructVo.setImageName(FabricImagesConstant.getFabricPeerImage(bcCluster.getClusterVersion()));
                 fabricConstructVo.setChainCodePort(7052);
                 bcNode = startPeer(fabricConstructVo, bcNode);
             }
@@ -213,20 +213,20 @@ public class BlockChainFabricNodeListener implements BlockChainListener {
         if (fabricConstructVo.getStateDbType() == 1) {
             // 如果选择 couch db做环境变量，需要在peer container里面添加以下四个环境变量，同时新增一个peer-couchdb 的container
             v1EnvVars.add(new V1EnvVar().name("CORE_LEDGER_STATE_STATEDATABASE").value("CouchDB"));
-            v1EnvVars.add(new V1EnvVar().name("CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS").value("localhost:" + BlockChainFabricConstructConstant.COUCH_DB_PORT));
-            v1EnvVars.add(new V1EnvVar().name("CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME").value(BlockChainFabricConstructConstant.COUCH_DB_USERNAME));
-            v1EnvVars.add(new V1EnvVar().name("CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD").value(BlockChainFabricConstructConstant.COUCH_DB_PASSWORD));
+            v1EnvVars.add(new V1EnvVar().name("CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS").value("localhost:" + FabricConstructConstant.COUCH_DB_PORT));
+            v1EnvVars.add(new V1EnvVar().name("CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME").value(FabricConstructConstant.COUCH_DB_USERNAME));
+            v1EnvVars.add(new V1EnvVar().name("CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD").value(FabricConstructConstant.COUCH_DB_PASSWORD));
             // 添加 peer-couchdb container
             v1Containers.add(new V1Container()
                     .name(fabricConstructVo.getNodeName() + "-couchdb")
-                    .image(BlockChainFabricImagesConstant.getFabricCouchDbImage(fabricConstructVo.getClusterVersion()))
+                    .image(FabricImagesConstant.getFabricCouchDbImage(fabricConstructVo.getClusterVersion()))
                     .ports(new ArrayList<V1ContainerPort>() {{
-                        add(new V1ContainerPort().containerPort(BlockChainFabricConstructConstant.COUCH_DB_PORT));
+                        add(new V1ContainerPort().containerPort(FabricConstructConstant.COUCH_DB_PORT));
                     }})
                     .env(new ArrayList<V1EnvVar>() {{
                         add(new V1EnvVar().name("TZ").value("Asia/Shanghai"));
-                        add(new V1EnvVar().name("COUCHDB_USER").value(BlockChainFabricConstructConstant.COUCH_DB_USERNAME));
-                        add(new V1EnvVar().name("COUCHDB_PASSWORD").value(BlockChainFabricConstructConstant.COUCH_DB_PASSWORD));
+                        add(new V1EnvVar().name("COUCHDB_USER").value(FabricConstructConstant.COUCH_DB_USERNAME));
+                        add(new V1EnvVar().name("COUCHDB_PASSWORD").value(FabricConstructConstant.COUCH_DB_PASSWORD));
                     }})
                     .volumeMounts(new ArrayList<V1VolumeMount>() {{
                         add(new V1VolumeMount().name("peer-data").mountPath("/opt/couchdb/data").subPath(peerDataPath + "/couchdb"));

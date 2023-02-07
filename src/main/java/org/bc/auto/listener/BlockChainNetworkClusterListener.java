@@ -1,7 +1,7 @@
 package org.bc.auto.listener;
 
 import org.bc.auto.config.BlockChainAutoConstant;
-import org.bc.auto.config.BlockChainFabricImagesConstant;
+import org.bc.auto.config.FabricImagesConstant;
 import org.bc.auto.config.BlockChainK8SConstant;
 import org.bc.auto.constant.impl.BlockChainResultCode;
 import org.bc.auto.constant.impl.K8SResultCode;
@@ -53,9 +53,9 @@ public class BlockChainNetworkClusterListener implements BlockChainListener{
             String command = "bash /opt/start-rca.sh admin:adminpw";
             logger.debug("[async->cluster] create blockchain's cluster, this is to start ca server, command is '{}'",command);
             //启动MSP的根CA服务器
-            HyperledgerFabricComponentsStartUtils.startHyperledgerFabricCaServer(bcCluster.getClusterName(),BlockChainAutoConstant.MSP_CA_NAME, BlockChainFabricImagesConstant.getFabricCaImage(bcCluster.getClusterVersion()),command);
+            HyperledgerFabricComponentsStartUtils.startHyperledgerFabricCaServer(bcCluster.getClusterName(),BlockChainAutoConstant.MSP_CA_NAME, FabricImagesConstant.getFabricCaImage(bcCluster.getClusterVersion()),command);
             //启动TLS的根CA服务器
-            HyperledgerFabricComponentsStartUtils.startHyperledgerFabricCaServer(bcCluster.getClusterName(),BlockChainAutoConstant.TLS_CA_NAME, BlockChainFabricImagesConstant.getFabricCaImage(bcCluster.getClusterVersion()),command);
+            HyperledgerFabricComponentsStartUtils.startHyperledgerFabricCaServer(bcCluster.getClusterName(),BlockChainAutoConstant.TLS_CA_NAME, FabricImagesConstant.getFabricCaImage(bcCluster.getClusterVersion()),command);
             //如果最终检查ca的服务器都没有启动的话，就抛出异常
             if(!K8SUtils.checkPodStatus(bcCluster.getClusterName())){
                 logger.error("[async->cluster] create blockchain's cluster, check ca server status pod error, make sure ca server start is success, namespace name is :{}",bcCluster.getClusterName());

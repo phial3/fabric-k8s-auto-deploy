@@ -1,24 +1,23 @@
 package org.bc.auto.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.exception.BaseRuntimeException;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+@Slf4j
 public class ValidatorUtilsTest {
-    private static final Logger logger = LoggerFactory.getLogger(ValidatorUtilsTest.class);
 
     @Test
     public void testStringNotNull(){
         try{
             ValidatorUtils.isNotNull("aaa");
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -39,7 +38,7 @@ public class ValidatorUtilsTest {
         try{
             ValidatorUtils.isNotNull("");
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -48,7 +47,7 @@ public class ValidatorUtilsTest {
         try{
             ValidatorUtils.isNotNull("", ValidatorResultCode.TEST_VALIDATOR_STRING_VALUE_NOT_NULL);
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -57,7 +56,7 @@ public class ValidatorUtilsTest {
         try{
             ValidatorUtils.isNotNull(null, ValidatorResultCode.TEST_VALIDATOR_OBJECT_VALUE_NOT_NULL);
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -66,7 +65,7 @@ public class ValidatorUtilsTest {
         try{
             ValidatorUtils.isNotNull(null);
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -76,7 +75,7 @@ public class ValidatorUtilsTest {
             List<String> stringList = new ArrayList<>();
             ValidatorUtils.isNotNull(stringList);
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -87,7 +86,7 @@ public class ValidatorUtilsTest {
             stringList.add("string");
             ValidatorUtils.isNotNull(stringList);
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -96,7 +95,7 @@ public class ValidatorUtilsTest {
         try{
             ValidatorUtils.isNotNull(new Integer(10));
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -105,7 +104,7 @@ public class ValidatorUtilsTest {
         try{
             ValidatorUtils.isFalse(false);
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -114,7 +113,7 @@ public class ValidatorUtilsTest {
         try{
             ValidatorUtils.isFalse(true);
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -123,7 +122,7 @@ public class ValidatorUtilsTest {
         try{
             ValidatorUtils.isTrue(true);
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -132,7 +131,7 @@ public class ValidatorUtilsTest {
         try{
             ValidatorUtils.isTrue(false);
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
@@ -147,7 +146,7 @@ public class ValidatorUtilsTest {
         try{
             assert(!ValidatorUtils.isGreaterThanZero(value));
         }catch (BaseRuntimeException e){
-            logger.error(e.getExceptionResult().toString());
+            log.error(e.getExceptionResult().toString());
         }
     }
 
