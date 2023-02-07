@@ -25,7 +25,7 @@ public class BlockChainAutoConstant {
     // k8s config path
     public static String K8S_CONFIG_PATH;
 
-    //K8S work path
+    //K8S data path
     public static String K8S_DATA_PATH;
 
     //设置根MSP,CA的名称

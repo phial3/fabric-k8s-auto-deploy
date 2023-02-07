@@ -42,7 +42,7 @@ public class HyperledgerFabricComponentsStartUtils {
     public static void startHyperledgerFabricCaServer(String namespace, String name, String image, String command) {
 
         logger.info("[k8s->pod] start hyperledger fabric ca server pod, name is :{}, namespace is :{}, images name :{}",
-                name,namespace,image);
+                name, namespace, image);
         final Map<String, String> labels = new HashMap<String, String>(4) {{
             put("namespace", namespace);
             put("app", APP_NAME);
@@ -90,7 +90,7 @@ public class HyperledgerFabricComponentsStartUtils {
 //                    );
                 }});
         K8SUtils.createDeployment(namespace, name, labels, podSpec);
-        logger.debug("[k8s->pod] start hyperledger fabric ca server pod, create ca server pod deployment success, name is :{}",name);
+        logger.debug("[k8s->pod] start hyperledger fabric ca server pod, create ca server pod deployment success, name is :{}", name);
 
         // 创建根ca service
         V1ServiceSpec svcSpec = new V1ServiceSpec()
@@ -99,15 +99,15 @@ public class HyperledgerFabricComponentsStartUtils {
                     add(new V1ServicePort().name("listen").port(CA_PORT).targetPort(new IntOrString(CA_PORT)));
                 }});
         K8SUtils.createService(namespace, name, labels, svcSpec);
-        logger.debug("[k8s->pod] start hyperledger fabric ca server pod, create ca server pod svc success, name is :{}",name);
-        logger.info("[k8s->pod] start hyperledger fabric ca server pod success, name is :{}",name);
+        logger.debug("[k8s->pod] start hyperledger fabric ca server pod, create ca server pod svc success, name is :{}", name);
+        logger.info("[k8s->pod] start hyperledger fabric ca server pod success, name is :{}", name);
     }
 
     public static void generateNodeCerts(BCCluster bcCluster, BCNode bcNode) {
         String clusterName = bcCluster.getClusterName();
         // 在k8s集群内部采用 svc.namespace 的方式来进行内部访问
-        String mspCaUrl = BlockChainK8SConstant.getFabricCaMspServerUrl(clusterName,CA_PORT);
-        String tlsCaUrl = BlockChainK8SConstant.getFabricCaTlsServerUrl(clusterName,CA_PORT);
+        String mspCaUrl = BlockChainK8SConstant.getFabricCaMspServerUrl(clusterName, CA_PORT);
+        String tlsCaUrl = BlockChainK8SConstant.getFabricCaTlsServerUrl(clusterName, CA_PORT);
 
         String scriptsPath = BlockChainK8SConstant.getFabricOperateScriptsPath();
         String mspScriptPath = BlockChainK8SConstant.getFabricCaClientMspConfigFilePath(bcCluster.getClusterVersion());
@@ -116,10 +116,10 @@ public class HyperledgerFabricComponentsStartUtils {
         String saveCertsRootPath = BlockChainK8SConstant.getSavePath();
 
         logger.info("[shell->cert] shell to get node cert, script path is '{}', msp script path is '{}', tls script path is '{}', product cert path is '{}', save cert path is '{}'",
-                scriptsPath,mspScriptPath,tlsScriptPath,certsRootPath,saveCertsRootPath);
-        switch (bcNode.getNodeType()){
-            case 1:{
-                if (!ShellUtils.exec(scriptsPath+ORDERER_MSP_SCRIPT_NAME, "orderer", clusterName, bcNode.getNodeName(), ROOT_CA_LOGIN_INFO, mspCaUrl, scriptsPath, mspScriptPath, certsRootPath, saveCertsRootPath)) {
+                scriptsPath, mspScriptPath, tlsScriptPath, certsRootPath, saveCertsRootPath);
+        switch (bcNode.getNodeType()) {
+            case 1: {
+                if (!ShellUtils.exec(scriptsPath + ORDERER_MSP_SCRIPT_NAME, "orderer", clusterName, bcNode.getNodeName(), ROOT_CA_LOGIN_INFO, mspCaUrl, scriptsPath, mspScriptPath, certsRootPath, saveCertsRootPath)) {
                     logger.error("[shell->cert] shell to get orderer node cert, generate node msp certs error. node name is :{}", bcNode.getNodeName());
                     throw new K8SException(K8SResultCode.SHELL_EXEC_ERROR);
                 }
@@ -129,27 +129,27 @@ public class HyperledgerFabricComponentsStartUtils {
                 }
                 break;
             }
-            case 2:{
+            case 2: {
                 if (!ShellUtils.exec(scriptsPath + PEER_MSP_SCRIPT_NAME, "register_peer", clusterName, bcNode.getOrgName(), bcNode.getNodeName(), ROOT_CA_LOGIN_INFO, mspCaUrl, scriptsPath, mspScriptPath, certsRootPath, saveCertsRootPath)) {
-                    logger.error("[shell->cert] shell to register node msp cert, generate node certs error. node name is :{}, org name is :{}",bcNode.getNodeName(),bcNode.getOrgName());
+                    logger.error("[shell->cert] shell to register node msp cert, generate node certs error. node name is :{}, org name is :{}", bcNode.getNodeName(), bcNode.getOrgName());
                     throw new K8SException(K8SResultCode.SHELL_EXEC_ERROR);
                 }
                 if (!ShellUtils.exec(scriptsPath + PEER_MSP_SCRIPT_NAME, "enroll_peer", clusterName, bcNode.getOrgName(), bcNode.getNodeName(), ROOT_CA_LOGIN_INFO, mspCaUrl, scriptsPath, mspScriptPath, certsRootPath, saveCertsRootPath)) {
-                    logger.error("[shell->cert] shell to enroll node msp cert, generate node certs error. node name is :{}, org name is :{}",bcNode.getNodeName(),bcNode.getOrgName());
+                    logger.error("[shell->cert] shell to enroll node msp cert, generate node certs error. node name is :{}, org name is :{}", bcNode.getNodeName(), bcNode.getOrgName());
                     throw new K8SException(K8SResultCode.SHELL_EXEC_ERROR);
                 }
                 if (!ShellUtils.exec(scriptsPath + PEER_TLS_SCRIPT_NAME, "register_peer", clusterName, bcNode.getOrgName(), bcNode.getNodeName(), ROOT_CA_LOGIN_INFO, tlsCaUrl, scriptsPath, tlsScriptPath, certsRootPath, saveCertsRootPath)) {
-                    logger.error("[shell->cert] shell to register node tls cert, generate node certs error. node name is :{}, org name is :{}",bcNode.getNodeName(),bcNode.getOrgName());
+                    logger.error("[shell->cert] shell to register node tls cert, generate node certs error. node name is :{}, org name is :{}", bcNode.getNodeName(), bcNode.getOrgName());
                     throw new K8SException(K8SResultCode.SHELL_EXEC_ERROR);
                 }
                 if (!ShellUtils.exec(scriptsPath + PEER_TLS_SCRIPT_NAME, "enroll_peer", clusterName, bcNode.getOrgName(), bcNode.getNodeName(), ROOT_CA_LOGIN_INFO, tlsCaUrl, scriptsPath, tlsScriptPath, certsRootPath, saveCertsRootPath)) {
-                    logger.error("[shell->cert] shell to enroll node tls cert, generate node certs error. node name is :{}, org name is :{}",bcNode.getNodeName(),bcNode.getOrgName());
+                    logger.error("[shell->cert] shell to enroll node tls cert, generate node certs error. node name is :{}, org name is :{}", bcNode.getNodeName(), bcNode.getOrgName());
                     throw new K8SException(K8SResultCode.SHELL_EXEC_ERROR);
                 }
                 break;
             }
-            default:{
-                logger.error("[shell->cert] shell to get node cert, maybe get error type value from parameter, error value is :{}",bcNode.getNodeType());
+            default: {
+                logger.error("[shell->cert] shell to get node cert, maybe get error type value from parameter, error value is :{}", bcNode.getNodeType());
                 throw new K8SException(K8SResultCode.SHELL_EXEC_ERROR);
             }
         }
@@ -159,8 +159,8 @@ public class HyperledgerFabricComponentsStartUtils {
     public static BCCert generateOrgCerts(BCCluster bcCluster, BCOrg bcOrg) {
         // 在k8s集群内部采用 svc.namespace 的方式来进行内部访问
         String clusterName = bcCluster.getClusterName();
-        String mspCaUrl = BlockChainK8SConstant.getFabricCaMspServerUrl(clusterName,CA_PORT);
-        String tlsCaUrl = BlockChainK8SConstant.getFabricCaTlsServerUrl(clusterName,CA_PORT);
+        String mspCaUrl = BlockChainK8SConstant.getFabricCaMspServerUrl(clusterName, CA_PORT);
+        String tlsCaUrl = BlockChainK8SConstant.getFabricCaTlsServerUrl(clusterName, CA_PORT);
         BCCert bcCert = new BCCert();
 
         //脚本执行的根目录
@@ -179,7 +179,7 @@ public class HyperledgerFabricComponentsStartUtils {
         //data path ==> /data/auto
         String saveCertsRootPath = BlockChainK8SConstant.getSavePath();
         logger.info("[shell->cert] shell to get org cert, script path is '{}', msp script path is '{}', tls script path is '{}', product cert path is '{}', save cert path is '{}'"
-        ,scriptsPath,mspScriptPath,tlsScriptPath,certsRootPath,saveCertsRootPath);
+                , scriptsPath, mspScriptPath, tlsScriptPath, certsRootPath, saveCertsRootPath);
 
         String certUserCaCert;
         String certUserPubKey;
@@ -192,13 +192,13 @@ public class HyperledgerFabricComponentsStartUtils {
         //脚本执行两次，一次是MSP的证书，一次是TLS的证书。
         //如果是Peer类型的组织，则需要加入系统通道。
         //Orderer组织自动生成orderer的节点
-        switch (bcOrg.getOrgType()){
-            case 1:{
+        switch (bcOrg.getOrgType()) {
+            case 1: {
                 //确定orderer证书的存储路径前缀  ==> /data/auto/mycluster/crypto-config/ordererOrganizations/mycluster/users/Admin@mycluster
                 String ordererCertPath = saveCertsRootPath + File.separator + clusterName + "/crypto-config/ordererOrganizations/" + clusterName + "/users/Admin@" + clusterName;
-                logger.debug("[shell->cert] shell to get orderer admin cert, save cert file path is '{}'",ordererCertPath);
+                logger.debug("[shell->cert] shell to get orderer admin cert, save cert file path is '{}'", ordererCertPath);
                 // 生成orderer msp信息
-                if (!ShellUtils.exec(scriptsPath+ORDERER_MSP_SCRIPT_NAME, "ordererOrg", clusterName, "orderer0", ROOT_CA_LOGIN_INFO, mspCaUrl, scriptsPath, mspScriptPath, certsRootPath, saveCertsRootPath)) {
+                if (!ShellUtils.exec(scriptsPath + ORDERER_MSP_SCRIPT_NAME, "ordererOrg", clusterName, "orderer0", ROOT_CA_LOGIN_INFO, mspCaUrl, scriptsPath, mspScriptPath, certsRootPath, saveCertsRootPath)) {
                     logger.error("[shell->cert] shell to get orderer org cert, generate orderer admin msp certs error.");
                     throw new K8SException(K8SResultCode.SHELL_EXEC_ERROR);
                 }
@@ -214,32 +214,32 @@ public class HyperledgerFabricComponentsStartUtils {
                 certTlsPubKey = ordererCertPath + "/tls/client.crt";
                 certTlsPriKey = ordererCertPath + "/tls/client.key";
                 logger.info("[shell->cert] shell to get orderer admin cert success: {}user ca certs path is '{}',{}user msp certs public key path is '{}',{}user msp certs private key path is '{}',{}user tls certs public key path is '{}',{}user tls certs private key path is '{}'{}."
-                        ,System.lineSeparator(),certUserCaCert,System.lineSeparator(),certUserPubKey,System.lineSeparator(),certUserPriKey,System.lineSeparator(),certTlsPubKey,System.lineSeparator(),certTlsPriKey,System.lineSeparator());
+                        , System.lineSeparator(), certUserCaCert, System.lineSeparator(), certUserPubKey, System.lineSeparator(), certUserPriKey, System.lineSeparator(), certTlsPubKey, System.lineSeparator(), certTlsPriKey, System.lineSeparator());
                 bcCert.setCertType(1);
                 break;
             }
-            case 2:{
+            case 2: {
                 //节点的证书路径前缀
                 String adminCertPath = saveCertsRootPath + File.separator + clusterName + "/crypto-config/peerOrganizations/" + bcOrg.getOrgName().toLowerCase() + "-" + clusterName + "/users/Admin@" + bcOrg.getOrgName().toLowerCase() + "-" + clusterName;
 
                 if (!ShellUtils.exec(scriptsPath + PEER_MSP_SCRIPT_NAME, "register_admin_user", clusterName, bcOrg.getOrgName(), "peer0", ROOT_CA_LOGIN_INFO, mspCaUrl, scriptsPath, mspScriptPath, certsRootPath, saveCertsRootPath)) {
-                    logger.error("[shell->cert] shell to register org admin msp cert, generate org admin msp certs error. org name is :{}",bcOrg.getOrgName());
+                    logger.error("[shell->cert] shell to register org admin msp cert, generate org admin msp certs error. org name is :{}", bcOrg.getOrgName());
                     throw new K8SException(K8SResultCode.SHELL_EXEC_PEER_ORG_CERT_ERROR);
                 }
                 if (!ShellUtils.exec(scriptsPath + PEER_MSP_SCRIPT_NAME, "enroll_admin_user", clusterName, bcOrg.getOrgName(), "peer0", ROOT_CA_LOGIN_INFO, mspCaUrl, scriptsPath, mspScriptPath, certsRootPath, saveCertsRootPath)) {
-                    logger.error("[shell->cert] shell to enroll org admin msp cert, generate org admin msp certs error. org name is :{}",bcOrg.getOrgName());
+                    logger.error("[shell->cert] shell to enroll org admin msp cert, generate org admin msp certs error. org name is :{}", bcOrg.getOrgName());
                     throw new K8SException(K8SResultCode.SHELL_EXEC_PEER_ORG_CERT_ERROR);
                 }
 
-                logger.info("[shell->cert] shell to get org admin msp cert, generate org admin msp certs success. org name is :{}",bcOrg.getOrgName());
+                logger.info("[shell->cert] shell to get org admin msp cert, generate org admin msp certs success. org name is :{}", bcOrg.getOrgName());
 
                 // 生成org tls信息
                 if (!ShellUtils.exec(scriptsPath + PEER_TLS_SCRIPT_NAME, "register_admin_user", clusterName, bcOrg.getOrgName(), "peer0", ROOT_CA_LOGIN_INFO, tlsCaUrl, scriptsPath, tlsScriptPath, certsRootPath, saveCertsRootPath)) {
-                    logger.error("[shell->cert] shell to register org admin tls cert, generate org admin tls certs error. org name is :{}",bcOrg.getOrgName());
+                    logger.error("[shell->cert] shell to register org admin tls cert, generate org admin tls certs error. org name is :{}", bcOrg.getOrgName());
                     throw new K8SException(K8SResultCode.SHELL_EXEC_PEER_ORG_CERT_ERROR);
                 }
                 if (!ShellUtils.exec(scriptsPath + PEER_TLS_SCRIPT_NAME, "enroll_admin_user", clusterName, bcOrg.getOrgName(), "peer0", ROOT_CA_LOGIN_INFO, tlsCaUrl, scriptsPath, tlsScriptPath, certsRootPath, saveCertsRootPath)) {
-                    logger.error("[shell->cert] shell to enroll org admin tls cert, generate org admin tls certs error. org name is :{}",bcOrg.getOrgName());
+                    logger.error("[shell->cert] shell to enroll org admin tls cert, generate org admin tls certs error. org name is :{}", bcOrg.getOrgName());
                     throw new K8SException(K8SResultCode.SHELL_EXEC_PEER_ORG_CERT_ERROR);
                 }
                 certUserCaCert = adminCertPath + "/msp/cacerts/ca." + clusterName + "-cert.pem";
@@ -249,24 +249,24 @@ public class HyperledgerFabricComponentsStartUtils {
                 certTlsPriKey = adminCertPath + "/tls/client.key";
                 bcCert.setCertType(3);
                 logger.info("[shell->cert] shell to get org cert success: {}user ca certs path is '{}',{}user msp certs public key path is '{}',{}user msp certs private key path is '{}',{}user tls certs public key path is '{}',{}user tls certs private key path is '{}'{}."
-                        ,System.lineSeparator(),certUserCaCert,System.lineSeparator(),certUserPubKey,System.lineSeparator(),certUserPriKey,System.lineSeparator(),certTlsPubKey,System.lineSeparator(),certTlsPriKey,System.lineSeparator());
+                        , System.lineSeparator(), certUserCaCert, System.lineSeparator(), certUserPubKey, System.lineSeparator(), certUserPriKey, System.lineSeparator(), certTlsPubKey, System.lineSeparator(), certTlsPriKey, System.lineSeparator());
 
                 // 为新增组织生成configtx.yaml
                 String orgMspDir = "../../../crypto-config/peerOrganizations/" + bcOrg.getOrgName().toLowerCase() + "-" + clusterName + "/msp";
-                String yamlFilePath = BlockChainK8SConstant.getSavePath()+ File.separator + clusterName + File.separator + "channels" + File.separator + clusterName + File.separator + bcOrg.getOrgName().toLowerCase() + File.separator + "configtx.yaml";
+                String yamlFilePath = BlockChainK8SConstant.getSavePath() + File.separator + clusterName + File.separator + "channels" + File.separator + clusterName + File.separator + bcOrg.getOrgName().toLowerCase() + File.separator + "configtx.yaml";
                 if (!ConfigTxUtils.generateOrgConfigTxYaml(bcOrg.getOrgName(), bcOrg.getOrgMspId(), orgMspDir, yamlFilePath)) {
                     throw new K8SException();
                 }
 
                 // 将组织MSP动态添加至系统通道内
                 if (!ShellUtils.exec(scriptsPath + ADD_ORG_TO_SYS_CHANNEL, clusterName, bcOrg.getOrgName(), "Orderer", "orderer0", BlockChainK8SConstant.getFabricToolsPath(bcCluster.getClusterVersion()), BlockChainK8SConstant.getFabricOperateScriptsPath(), BlockChainK8SConstant.getSavePath())) {
-                    logger.error("[shell->cert] shell to add org in fabric system channel, add org error, org name is :{}, cluster name is :{}",bcOrg.getOrgName(), clusterName);
+                    logger.error("[shell->cert] shell to add org in fabric system channel, add org error, org name is :{}, cluster name is :{}", bcOrg.getOrgName(), clusterName);
                     throw new K8SException();
                 }
                 break;
             }
-            default:{
-                logger.error("[shell->cert] shell to get org cert, maybe get error type value from parameter, error value is :{}",bcOrg.getOrgType());
+            default: {
+                logger.error("[shell->cert] shell to get org cert, maybe get error type value from parameter, error value is :{}", bcOrg.getOrgType());
                 throw new K8SException(K8SResultCode.SHELL_EXEC_TYPE_ERROR);
             }
         }
@@ -284,7 +284,7 @@ public class HyperledgerFabricComponentsStartUtils {
         return bcCert;
     }
 
-    private static Map<String,Integer> createOrdererService(String clusterName,int ordererNum){
+    private static Map<String, Integer> createOrdererService(String clusterName, int ordererNum) {
         LinkedHashMap<String, Integer> ordererNodePorts = new LinkedHashMap<>();
         for (int i = 0; i < ordererNum; i++) {
             final String ordererName = "orderer" + i;
@@ -317,7 +317,7 @@ public class HyperledgerFabricComponentsStartUtils {
         return ordererNodePorts;
     }
 
-    public static void buildFabricChain(BCCluster bcCluster,BCOrg bcOrg){
+    public static void buildFabricChain(BCCluster bcCluster, BCOrg bcOrg) {
         // 将config目录拷贝至pv存储目录下
         if (!ShellUtils.exec(BlockChainK8SConstant.getFabricOperateScriptsPath() + COMMON_OPERATE_SCRIPT_NAME, "copy_config", bcCluster.getClusterName(), BlockChainK8SConstant.getFabricConfigPath(), BlockChainK8SConstant.getFabricOperateScriptsPath(), BlockChainK8SConstant.getSavePath(), "")) {
             //证书拷贝失败
@@ -371,7 +371,7 @@ public class HyperledgerFabricComponentsStartUtils {
         }
     }
 
-    public static BCChannel buildFabricChannel(BCCluster bcCluster, List<String> orgNameList, BCNode ordererNode, BCChannel bcChannel){
+    public static BCChannel buildFabricChannel(BCCluster bcCluster, List<String> orgNameList, BCNode ordererNode, BCChannel bcChannel) {
 
         // 生成configtx.yaml
         JSONArray arr = new JSONArray();
@@ -404,8 +404,8 @@ public class HyperledgerFabricComponentsStartUtils {
     }
 
 
-    public static void nodeJoinFabricChannel(JSONArray jsonArray){
-        for(int i=0;i<jsonArray.size();i++){
+    public static void nodeJoinFabricChannel(JSONArray jsonArray) {
+        for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             String clusterName = jsonObject.getString("clusterName");
             String peerName = jsonObject.getString("peerName");

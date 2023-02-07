@@ -1,13 +1,9 @@
 package org.bc.auto.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.bc.auto.model.vo.ChannelVo;
 import org.bc.auto.model.vo.Result;
-import org.bc.auto.service.ChannelService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.bc.auto.service.system.ChannelService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package org.bc.auto.service;
+package org.bc.auto.service.system;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

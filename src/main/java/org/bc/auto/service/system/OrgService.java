@@ -1,4 +1,4 @@
-package org.bc.auto.service;
+package org.bc.auto.service.system;
 
 import org.bc.auto.constant.impl.ValidatorResultCode;
 import org.bc.auto.dao.BCClusterMapper;

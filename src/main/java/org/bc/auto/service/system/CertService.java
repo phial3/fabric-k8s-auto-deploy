@@ -1,4 +1,4 @@
-package org.bc.auto.service;
+package org.bc.auto.service.system;
 
 import org.bc.auto.dao.BCCertMapper;
 import org.bc.auto.exception.BaseRuntimeException;
